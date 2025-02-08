@@ -4,13 +4,13 @@ import react from '@vitejs/plugin-react'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: '/ViteSite/',
+  base: '/Purple-Hub/',
   server: {
     port: 3000,
     strictPort: false, // Allow fallback to next available port
     proxy: {
       '/api': {
-        target: process.env.VITE_API_URL || 'http://localhost:5001',
+        target: process.env.BACKEND_URL || 'http://localhost:5001',
         changeOrigin: true,
         secure: false,
         configure: (proxy, options) => {
@@ -26,16 +26,5 @@ export default defineConfig({
         },
       }
     }
-  },
-  build: {
-    outDir: 'dist',
-    sourcemap: true,
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          vendor: ['react', 'react-dom', 'react-router-dom'],
-        },
-      },
-    },
   }
 }) 

@@ -20,7 +20,7 @@ export const supabase = createClient(
 // Middleware
 app.use(helmet());
 app.use(cors({
-  origin: process.env.FRONTEND_URL || '*',
+  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
   credentials: true
 }));
 app.use(morgan('dev'));
@@ -37,8 +37,41 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: 'Something went wrong!' });
 });
 
-// Start server
-const PORT = process.env.PORT || 5001;
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server running on port ${PORT}`);
-}); 
+// Function to find an available port
+const findAvailablePort = async (startPort) => {
+  const net = await import('net');
+  
+  return new Promise((resolve, reject) => {
+    const server = net.createServer();
+    server.unref();
+    
+    server.on('error', () => {
+      resolve(findAvailablePort(startPort + 1));
+    });
+    
+    server.listen(startPort, () => {
+      server.close(() => {
+        resolve(startPort);
+      });
+    });
+  });
+};
+
+// Start server with dynamic port
+const startServer = async () => {
+  try {
+    const preferredPort = parseInt(process.env.PORT) || 5001;
+    const port = await findAvailablePort(preferredPort);
+    
+    app.listen(port, () => {
+      console.log(`Server running on port ${port}`);
+      // Update the port in process.env for other parts of the application
+      process.env.PORT = port.toString();
+    });
+  } catch (error) {
+    console.error('Failed to start server:', error);
+    process.exit(1);
+  }
+};
+
+startServer(); 
