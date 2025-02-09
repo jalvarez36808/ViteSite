@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "homepage": "https://{YOUR_GITHUB_USERNAME}.github.io/Purple-Hub",
+  "homepage": "https://jalvarez36808.github.io/ViteSite",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
